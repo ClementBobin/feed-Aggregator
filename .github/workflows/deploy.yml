@@ -24,10 +24,6 @@ jobs:
           python-version: 3.11
       - run: pip install -r requirements.txt
       - run: python aggregate.py
-      - name: Prepare output folder
-        run: |
-          mkdir -p public
-          mv docs/feed.xml public/feed.xml
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
