@@ -1,9 +1,18 @@
-name: Update RSS Feed
+name: Deploy & Update RSS Feed
 
 on:
   schedule:
     - cron: "0 * * * *" # Every hour
   workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: read
+  pages: write      # needed for deployment
+  id-token: write   # needed for authentication to Pages
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -15,10 +24,22 @@ jobs:
           python-version: 3.11
       - run: pip install -r requirements.txt
       - run: python aggregate.py
-      - name: Commit and push changes
+      - name: Prepare output folder
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add docs/feed.xml
-          git commit -m "Update aggregated feed" || echo "No changes"
-          git push
+          mkdir -p public
+          mv docs/feed.xml public/feed.xml
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
