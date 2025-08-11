@@ -5,7 +5,7 @@ import pytz
 import os
 
 FEEDS = [
-    "https://clementbobin.github.io/obsidian/index.xml"
+    ""
 ]
 
 def fetch_all_feeds(feed_urls):
