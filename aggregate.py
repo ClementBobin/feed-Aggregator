@@ -39,8 +39,8 @@ def generate_combined_feed(entries):
             fe.pubDate(datetime(*e["published"][:6], tzinfo=pytz.UTC))
 
     # Ensure folder exists
-    os.makedirs("docs", exist_ok=True)
-    fg.rss_file("docs/feed.xml")
+    os.makedirs("public", exist_ok=True)
+    fg.rss_file("public/feed.xml")
 
 if __name__ == "__main__":
     all_entries = fetch_all_feeds(FEEDS)
