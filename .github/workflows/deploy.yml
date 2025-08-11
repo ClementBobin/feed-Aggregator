@@ -2,7 +2,7 @@ name: Deploy & Update RSS Feed
 
 on:
   schedule:
-    - cron: "0 * * * *" # Every hour
+    - cron: "0 */8 * * *" # 8 hours
   workflow_dispatch: # Manual trigger
 
 permissions:
