@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aggregated RSS Feed</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-6 text-center">📡 Aggregated Feed</h1>
+    <div id="feed-container" class="space-y-4"></div>
+  </div>
+
+  <script>
+    async function loadFeed() {
+      try {
+        const res = await fetch('feed.xml');
+        const text = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "application/xml");
+
+        const items = Array.from(xml.querySelectorAll("item"));
+        const container = document.getElementById("feed-container");
+
+        items.forEach((item, index) => {
+          const title = item.querySelector("title")?.textContent || "No title";
+          const link = item.querySelector("link")?.textContent || "#";
+          const desc = item.querySelector("description")?.textContent || "";
+          const date = item.querySelector("pubDate")?.textContent || "";
+
+          const card = document.createElement("a");
+          card.href = link;
+          card.target = "_blank";
+          card.className = "block bg-white p-5 rounded-lg shadow hover:shadow-lg transition duration-300 border border-gray-200";
+          card.innerHTML = `
+            <h2 class="text-xl font-semibold mb-2">${title}</h2>
+            <p class="text-sm text-gray-500 mb-2">${new Date(date).toLocaleString()}</p>
+            <p class="text-gray-700">${desc}</p>
+          `;
+          container.appendChild(card);
+        });
+
+        // Animate cards
+        anime({
+          targets: "#feed-container a",
+          translateY: [20, 0],
+          opacity: [0, 1],
+          delay: anime.stagger(100),
+          easing: "easeOutQuad"
+        });
+      } catch (error) {
+        console.error("Error loading feed:", error);
+      }
+    }
+
+    loadFeed();
+  </script>
+</body>
+</html>
