@@ -4,8 +4,7 @@ from datetime import datetime
 import pytz
 
 FEEDS = [
-    "https://example.com/rss",
-    "https://another.com/feed"
+    "https://clementbobin.github.io/obsidian/index.xml"
 ]
 
 def fetch_all_feeds(feed_urls):
