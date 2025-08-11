@@ -2,6 +2,7 @@ import feedparser
 from feedgen.feed import FeedGenerator
 from datetime import datetime
 import pytz
+import os
 
 FEEDS = [
     "https://clementbobin.github.io/obsidian/index.xml"
@@ -37,6 +38,8 @@ def generate_combined_feed(entries):
         if e["published"]:
             fe.pubDate(datetime(*e["published"][:6], tzinfo=pytz.UTC))
 
+    # Ensure folder exists
+    os.makedirs("docs", exist_ok=True)
     fg.rss_file("docs/feed.xml")
 
 if __name__ == "__main__":
